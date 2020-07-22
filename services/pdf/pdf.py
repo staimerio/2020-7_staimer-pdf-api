@@ -29,9 +29,9 @@ BODY_POST_REQ = {
     "to": "pdf",
     "source": "file",
 }
-SLEEP_DOWNLOAD_TIME = 3
-PDF_OUT_PATH = 'public/pdf'
-MAX_DOWNLOAD_RETRY = 100
+PDF_SLEEP_DOWNLOAD_TIME = app.config.get('PDF_SLEEP_DOWNLOAD_TIME')
+PDF_OUT_PATH = app.config.get('PDF_OUT_PATH')
+PDF_MAX_DOWNLOAD_RETRY = app.config.get('PDF_MAX_DOWNLOAD_RETRY')
 
 
 def build_from_epub_list(filename, files, binary_response=False):
@@ -70,9 +70,9 @@ def build_from_epub_list(filename, files, binary_response=False):
             "/send", "/{}/download".format(_process_id)
         )
         """Get the content from the response"""
-        for i in range(0, MAX_DOWNLOAD_RETRY):
+        for i in range(0, PDF_MAX_DOWNLOAD_RETRY):
             """Sleep 3 seconds"""
-            sleep(SLEEP_DOWNLOAD_TIME)
+            sleep(PDF_SLEEP_DOWNLOAD_TIME)
             """Download from the url"""
             req_download = requests.get(_download_url)
             """Check if the response has any problem"""
@@ -107,7 +107,7 @@ def build_from_epub_list(filename, files, binary_response=False):
         """Transform name"""
         if not filename:
             filename = _process_id
-        """Transform data response"""        
+        """Transform data response"""
         _pdf = {
             u"title": filename,
             u"pdf_title": slugify(filename)+".pdf",
