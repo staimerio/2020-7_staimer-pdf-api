@@ -12,5 +12,3 @@ venv
 passenger_wsgi.py
 
 #App
-public/epub/*
-public/pdf/*
