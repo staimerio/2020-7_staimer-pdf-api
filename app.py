@@ -12,9 +12,6 @@ from apps.urls import APP_BACKEND
 # Routes
 from routes.routes import router
 
-# Define all environment paths
-app.env.read_env('.env.development', override=True)
-
 # Add routes to app
 app.use(router)
 
