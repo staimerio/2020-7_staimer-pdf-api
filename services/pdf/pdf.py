@@ -29,15 +29,15 @@ BODY_POST_REQ = {
     "to": "pdf",
     "source": "file",
 }
-PDF_SLEEP_DOWNLOAD_TIME = app.config.get('PDF_SLEEP_DOWNLOAD_TIME')
+PDF_SLEEP_DOWNLOAD_TIME = app.config.get(
+    'PDF_SLEEP_DOWNLOAD_TIME', callback=int)
 PDF_OUT_PATH = app.config.get('PDF_OUT_PATH')
-PDF_MAX_DOWNLOAD_RETRY = app.config.get('PDF_MAX_DOWNLOAD_RETRY')
+PDF_MAX_DOWNLOAD_RETRY = app.config.get('PDF_MAX_DOWNLOAD_RETRY', callback=int)
 
 
-def build_from_epub_list(filename, files, binary_response=False):
+def build_from_epub_list(files, binary_response=False):
     """Build a pdf file from epub file
 
-    :param filename: Name of the file
     :param files: List of Epub file to convert to pdf format
     :param binary_response: Flag that assign if the response will has a binary file
     """
@@ -103,14 +103,16 @@ def build_from_epub_list(filename, files, binary_response=False):
         else:
             _data_b64 = None
         """Delete file"""
-        rmfile(_out_fname)
+        # rmfile(_out_fname)
         """Transform name"""
-        if not filename:
-            filename = _process_id
+        if _file.filename:
+            _filename = _file.filename
+        else:
+            _filename = _process_id
         """Transform data response"""
         _pdf = {
-            u"title": filename,
-            u"pdf_title": slugify(filename)+".pdf",
+            u"title": _filename,
+            u"pdf_title": slugify(_filename)+".pdf",
             u"pdf_size": _size,
             u"pdf_id": _process_id,
             u"pdf_b64": _data_b64

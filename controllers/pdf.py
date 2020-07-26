@@ -29,7 +29,6 @@ def build_pdf_from_epub_list(req: Request, res: Response, next: Next):
 
     """Create file"""
     _file = pdf.build_from_epub_list(
-        req.param('filename'),
         _files,
         req.param('binary_response'),
     )
