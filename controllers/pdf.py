@@ -93,3 +93,44 @@ def build_pdf_from_epub_list_ebook(req: Request, res: Response, next: Next):
             msg="Files created."
         )
     )
+
+
+def build_from_images(req: Request, res: Response, next: Next):
+    """Validate obligate params"""
+    _validate = validate_obligate_fields({
+        u'title': req.param('title'),
+    })
+
+    """Check if has errors return a error response"""
+    if _validate["valid"] is False:
+        return res.bad_request(
+            error_response_service(
+                "The param {} is necesary.".format(_validate["error"])
+            )
+        )
+
+    """Create book"""
+    _file = pdf.build_from_images(
+        req.param('title'),
+        req.param('cover'),
+        req.param('sections', default_value=[]),
+        req.param('binary_response'),
+        req.param('resources', default_value=[]),
+    )
+
+    """Check if error exists"""
+    if _file['valid'] is False:
+        res.not_found(_file)
+
+    """Transform data response"""
+    _data_response = {
+        u"pdf": _file['data'],
+    }
+
+    """Response to client"""
+    res.ok(
+        success_response_service(
+            data=_data_response,
+            msg="File created."
+        )
+    )
