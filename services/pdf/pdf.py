@@ -45,11 +45,21 @@ PDF_SLEEP_DOWNLOAD_TIME = app.config.get(
 PDF_OUT_PATH = app.config.get('PDF_OUT_PATH')
 PDF_FONT_PATH = app.config.get('PDF_FONT_PATH')
 PDF_MAX_DOWNLOAD_RETRY = app.config.get('PDF_MAX_DOWNLOAD_RETRY', callback=int)
-PDF_CSS_STYLE = '''@namespace epub "http://www.idpf.org/2007/ops"; p, h1, h2 {font-family: "Roboto", sans-serif !important;}h2 {text-align:left;text-transform:uppercase;font-weight:200}ol {list-style-type:none}ol>li:first-child{margin-top:.3em}nav[epub|type~=toc]>ol>li>ol {list-style-type:square}nav[epub|type~=toc]>ol>li>ol>li {margin-top:.3em}p {font-size: 1.8rem;}h1 {text-transform: uppercase;font-size: 3rem;}a {padding: 3px 3px;font-weight: bold;text-transform: uppercase;color: #272727;border-radius: 7px;font-size: 2rem;}h2 {margin: 0px 0px 0px 0px;font-size: 2.5rem; text-transform: uppercase !important;text-align:center} @font-face {font-family: Roboto; src: url("''' + \
+
+PDF_CSS_BASE = '''@namespace epub "http://www.idpf.org/2007/ops";'''
+
+PDF_CSS_STYLE_RUSSIAN = PDF_CSS_BASE+'''p, h1, h2 {font-family: "Roboto", sans-serif !important;}h2 {text-align:left;text-transform:uppercase;font-weight:200}ol {list-style-type:none}ol>li:first-child{margin-top:.3em}nav[epub|type~=toc]>ol>li>ol {list-style-type:square}nav[epub|type~=toc]>ol>li>ol>li {margin-top:.3em}p {font-size: 1.8rem;}h1 {text-transform: uppercase;font-size: 3rem;}a {padding: 3px 3px;font-weight: bold;text-transform: uppercase;color: #272727;border-radius: 7px;font-size: 2rem;}h2 {margin: 0px 0px 0px 0px;font-size: 2.5rem; text-transform: uppercase !important;text-align:center} @font-face {font-family: Roboto; src: url("''' + \
     PDF_FONT_PATH + \
     '''/Roboto-Regular.ttf");} @font-face {font-family: Roboto; src: url("''' + \
     PDF_FONT_PATH + \
     '''/Roboto-Bold.ttf"); font-weight: bold;}'''
+
+PDF_CSS_STYLE_CHINESE = PDF_CSS_BASE+'''p, h1, h2 {padding-right: 100px !important; padding-left: 100px !important;margin-right: 100px !important; margin-left: 100px !important; font-family: "HanyiSentyCandy" !important;}h2 {text-align:left;text-transform:uppercase;font-weight:200}ol {list-style-type:none}ol>li:first-child{margin-top:.3em}nav[epub|type~=toc]>ol>li>ol {list-style-type:square}nav[epub|type~=toc]>ol>li>ol>li {margin-top:.3em}p {font-size: 1.8rem;}h1 {text-transform: uppercase;font-size: 3rem;}a {padding: 3px 3px;font-weight: bold;text-transform: uppercase;color: #272727;border-radius: 7px;font-size: 2rem;}h2 {font-size: 2.5rem; text-transform: uppercase !important;text-align:center} @font-face {font-family: HanyiSentyCandy; src: url("''' + \
+    PDF_FONT_PATH + \
+    '''/Hanyi Senty Candy-color.ttf");}'''
+    
+PDF_CSS_STYLE_GENERAL = PDF_CSS_BASE + \
+    '''body{font-family:Cambria,Liberation Serif,Bitstream Vera Serif,Georgia,Times,Times New Roman,serif}h2{text-align:left;text-transform:uppercase;font-weight:200}ol{list-style-type:none}ol>li:first-child{margin-top:.3em}nav[epub|type~=toc]>ol>li>ol{list-style-type:square}nav[epub|type~=toc]>ol>li>ol>li{margin-top:.3em}p{font-size: 1.8rem;}h1{text-transform: uppercase;font-size: 3rem;}a{padding: 3px 3px;font-weight: bold;text-transform: uppercase;color: #272727;border-radius: 7px;font-size: 2rem;}h2{margin: 0px 0px 0px 0px;font-size: 2.5rem; text-transform: uppercase !important;text-align:center}'''
 
 
 def build_from_epub_list(files, binary_response=False):
@@ -144,7 +154,17 @@ def build_from_epub_list(files, binary_response=False):
     )
 
 
-def build_from_images_html(title, cover, sections, binary_response=False, resources=[]):
+def set_encode_style(encode_style=0):
+    if encode_style == 0:
+        return PDF_CSS_STYLE_GENERAL
+    elif encode_style == 1:
+        return PDF_CSS_STYLE_RUSSIAN
+    elif encode_style == 2:
+        return PDF_CSS_STYLE_CHINESE
+    return PDF_CSS_STYLE_GENERAL
+
+
+def build_from_images_html(title, cover, sections, binary_response=False, resources=[], encode_style=0):
     """Build a epub file from html content with a section list
 
     :param title: Title of the book
@@ -157,7 +177,9 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
     _source_html_cover += "<head>"
     _source_html_cover += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"
     _source_html_cover += "<meta charset=\"UTF-8\">"
-    _source_html_cover += "<style>{0}</style>".format(PDF_CSS_STYLE)
+    _source_html_cover += "<style>{0}</style>".format(
+        set_encode_style(PDF_CSS_STYLE_GENERAL)
+    )
     _source_html_cover += "</head>"
     _source_html_cover += "<body style=\"text-align: center; font-family: none;\">"
     _source_html_cover += cover
@@ -202,9 +224,11 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
 
         _source_html_content = "<html>"
         _source_html_content += "<head>"
-        _source_html_content += "<style>{0}</style>".format(PDF_CSS_STYLE)
+        _source_html_content += "<style>{0}</style>".format(
+            set_encode_style(encode_style)
+        )
         _source_html_content += "</head>"
-        _source_html_content += "<body style=\"text-align: center; font-family: \"Roboto\", sans-serif !important;\">"
+        _source_html_content += "<body style=\"text-align: center; font-family: Roboto, sans-serif !important; padding-right: 100px !important; padding-left: 100px !important; margin-right: 100px !important; margin-left: 100px !important;\">"
 
         """For each section do the following"""
         for _idx_sec, _section in enumerate(sections):
@@ -268,7 +292,7 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
     else:
         _data_b64 = None
     """Delete file"""
-    rmfile(_out_fname)
+    # rmfile(_out_fname)
     """Transform name"""
     if not title:
         title = _process_id

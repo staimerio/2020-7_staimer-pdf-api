@@ -158,6 +158,7 @@ def build_from_html(req: Request, res: Response, next: Next):
         req.param('sections', default_value=[]),
         req.param('binary_response'),
         req.param('resources', default_value=[]),
+        req.param('encode_style', default_value=0),
     )
 
     """Check if error exists"""
