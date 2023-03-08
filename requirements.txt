@@ -4,3 +4,4 @@ xhtml2pdf==0.2.5
 uuid==1.30
 PyPDF4==1.27.0
 img2pdf==0.4.0
+weasyprint

@@ -252,26 +252,30 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
         )
 
     def add_resource(_resource):
-        """Add resources"""
-        if _resource['type'] == 'image_url':
-            _image_item = get_resource_image_item(
-                _resource['url'],
-                _resource['file_name'],
-                _resource.get('headers')
-            )
-            if not _image_item:
-                return None
-            # add Image file
-            _out_fname_content_ch = "{0}/chapter-{1}.pdf".format(
-                PDF_OUT_PATH,
-                uuid.uuid1().hex
-            )
-            with open(_out_fname_content_ch, "w+b") as out_file:
-                out_file.write(img2pdf.convert(_image_item['binary']))
+        try:
+            """Add resources"""
+            if _resource['type'] == 'image_url':
+                _image_item = get_resource_image_item(
+                    _resource['url'],
+                    _resource['file_name'],
+                    _resource.get('headers')
+                )
+                if not _image_item:
+                    return None
+                # add Image file
+                _out_fname_content_ch = "{0}/chapter-{1}.pdf".format(
+                    PDF_OUT_PATH,
+                    uuid.uuid1().hex
+                )
+                with open(_out_fname_content_ch, "w+b") as out_file:
+                    out_file.write(img2pdf.convert(_image_item['binary']))
 
-            _files_merge.append(
-                _out_fname_content_ch
-            )
+                _files_merge.append(
+                    _out_fname_content_ch
+                )
+        except Exception as err:
+            print(err)
+            pass
 
     for _resource in resources:
         add_resource(_resource)
@@ -292,7 +296,7 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
     else:
         _data_b64 = None
     """Delete file"""
-    # rmfile(_out_fname)
+    rmfile(_out_fname)
     """Transform name"""
     if not title:
         title = _process_id
