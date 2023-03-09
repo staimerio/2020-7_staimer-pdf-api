@@ -130,7 +130,7 @@ def build_from_epub_list(files, binary_response=False):
         else:
             _data_b64 = None
         """Delete file"""
-        rmfile(_out_fname)
+        #rmfile(_out_fname)
         """Transform name"""
         if _file.filename:
             _filename = _file.filename
@@ -296,7 +296,9 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
     else:
         _data_b64 = None
     """Delete file"""
-    rmfile(_out_fname)
+    #rmfile(_out_fname)
+    rmfile(_out_fname_cover)
+    rmfile(_out_fname_content)
     """Transform name"""
     if not title:
         title = _process_id
