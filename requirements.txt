@@ -2,3 +2,4 @@ retic==0.0.15
 requests==2.24.0
 xhtml2pdf
 PyPDF4
+img2pdf
