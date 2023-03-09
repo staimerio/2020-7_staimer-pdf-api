@@ -10,15 +10,12 @@ services:
       APP_HOSTNAME: "0.0.0.0"
       APP_PORT: 1807
 
-      #MYSQL database
-      MYSQL_DATABASE: "nmkuivmj_jobs"
-      MYSQL_USERNAME: "nmkuivmj_jobs"
-      MYSQL_PASSWORD: "DCYdS3YwqQu%"
-      MYSQL_PORT: 3306
-      MYSQL_HOST: "91.149.225.224"
-      MYSQL_QUERY:
-      MYSQL_DRIVERNAME: "mysql+pymysql"
-      MYSQL_ECHO: 1
-      MYSQL_POOL_PREPING: 1
-      MYSQL_POOL_SIZE: 20
-      MYSQL_MAX_OVERFLOW: 0
+#PDF Converter
+      PDF_SLEEP_DOWNLOAD_TIME: 5
+      PDF_OUT_PATH: "public/pdf"
+      PDF_MAX_DOWNLOAD_RETRY: 00
+      PDF_FONT_PATH: "/home/yixzgdwv/apps/pdf.netapi.app/api/1/public/font"
+
+      #Apps
+      APP_BACKEND_ONLINE_CONVERTER: "https://www.onlineconverter.com"
+      APP_BACKEND_EBOOK_ONLINE_CONVERTER: "https://ebook.online-convert.com/convert-to-pdf"
