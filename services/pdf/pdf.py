@@ -296,7 +296,7 @@ def build_from_images_html(title, cover, sections, binary_response=False, resour
     else:
         _data_b64 = None
     """Delete file"""
-    #rmfile(_out_fname)
+    rmfile(_out_fname)
     rmfile(_out_fname_cover)
     rmfile(_out_fname_content)
     """Transform name"""
